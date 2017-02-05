@@ -15,6 +15,21 @@ view: seasons {
     sql: ${TABLE}.dayzero ;;
   }
 
+  dimension_group: game_date {
+    type: time
+    group_label: "Game Data"
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
+    sql: DATE_ADD(${dayzero_raw},${allRecords.daynum},"DAY") ;;
+  }
+
   dimension: regionw {
     type: string
     sql: ${TABLE}.regionw ;;

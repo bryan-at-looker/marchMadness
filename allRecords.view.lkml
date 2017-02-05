@@ -20,7 +20,7 @@ view: allRecords {
   }
 
 
-  measure: games {
+  measure: count {
     group_label: "Standings"
     type: count
     drill_fields: [detail*]
@@ -30,7 +30,10 @@ view: allRecords {
     type: string
     sql: ${TABLE}.result ;;
   }
-
+  dimension: game_type {
+    type: string
+    sql: ${TABLE}.game_type ;;
+  }
   dimension: season {
     type: number
     sql: ${TABLE}.season ;;
@@ -223,7 +226,7 @@ view: allRecords {
   }
   measure: win_percentage {
     group_label: "Standings"
-    sql: ${count_wins} / ${games} ;;
+    sql: ${count_wins} / ${count} ;;
     type: number
     value_format_name: percent_2
   }
