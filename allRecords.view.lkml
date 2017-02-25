@@ -41,6 +41,7 @@ view: allRecords {
   }
 
   dimension: daynum {
+    hidden: yes
     type: number
     sql: ${TABLE}.daynum ;;
   }
@@ -87,8 +88,8 @@ view: allRecords {
                       ELSE "Unknown" END;;
   }
 
-  dimension: numot {
-    type: number
+  measure: overtime_periods {
+    type: sum
     sql: ${TABLE}.numot ;;
   }
 
@@ -162,28 +163,47 @@ view: allRecords {
     sql: ${TABLE}.fta ;;
   }
 
-  dimension: o_r {
+  measure: rebounds_offensive {
     group_label: "Game Data"
-    type: number
+    type: sum
     sql: ${TABLE}.o_r ;;
   }
 
-  dimension: dr {
+  measure: rebounds_defensive {
     group_label: "Game Data"
-    type: number
+    type: sum
     sql: ${TABLE}.dr ;;
   }
 
-  dimension: ast {
+  measure: rebounds {
     group_label: "Game Data"
-    type: number
-    sql: ${TABLE}.ast ;;
+    type: sum
+    sql: ${TABLE}.dr + ${TABLE}.dr ;;
   }
 
-  dimension: t_o {
+  measure: assists {
     group_label: "Game Data"
-    type: number
+    type: sum
+    sql: ${TABLE}.ast ;;
+    value_format_name: decimal_0
+  }
+  measure: assists_per_game {
+    group_label: "Stats"
+    type: average
+    sql: ${TABLE}.ast ;;
+    value_format_name: decimal_1
+  }
+
+  measure: turn_overs {
+    group_label: "Game Data"
+    type: sum
     sql: ${TABLE}.t_o ;;
+  }
+  measure: turn_overs_per_game {
+    group_label: "Stats"
+    type: average
+    sql: ${TABLE}.t_o ;;
+    value_format_name: decimal_1
   }
 
   dimension: stl {
@@ -254,28 +274,43 @@ view: allRecords {
     sql: ${sum_fgm3}/${sum_fga3} ;;
     value_format_name: percent_2
   }
+  measure: points_per_game {
+    group_label: "Stats"
+    type: average
+    sql: ${score} ;;
+    value_format_name: decimal_1
+    drill_fields: [detail*]
+  }
+  measure: points_allowed_per_game {
+    group_label: "Stats"
+    type: average
+    sql: ${score} ;;
+    value_format_name: decimal_1
+  }
 
   set: detail {
     fields: [
       result,
       season,
       daynum,
+      seasons.game_date_date,
       team,
+      teams.name,
       score,
       opponent,
       opponent_score,
       wloc,
-      numot,
+      overtime_periods,
       fgm,
       fga,
       fgm3,
       fga3,
       ftm,
       fta,
-      o_r,
-      dr,
-      ast,
-      t_o,
+      rebounds_offensive,
+      rebounds_defensive,
+      assists,
+      turn_overs,
       stl,
       blk,
       pf

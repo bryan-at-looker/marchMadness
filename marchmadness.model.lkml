@@ -31,6 +31,7 @@ explore: allRecords {
     fields: [seasons.game_date_date]
   }
 }
+explore: a_test {}
 
 # explore: seasons {
 #   join: allRecords {

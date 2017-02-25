@@ -8,7 +8,11 @@ view: tourney_seeds {
 
   dimension: seed {
     type: string
-    sql: ${TABLE}.seed ;;
+    sql: SUBSTR(${TABLE}.seed, -2,2) ;;
+  }
+  dimension: group {
+    type: string
+    sql:  SUBSTR(${TABLE}.seed, 1,1) ;;
   }
 
   dimension: team {
