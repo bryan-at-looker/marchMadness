@@ -36,7 +36,8 @@ explore: allRecords {
     sql_on: ${allRecords.primary_key} = ${team_game_season_facts.primary_key} ;;
   }
 }
-explore: team_1_facts {
+explore: team_1_facts2 {
+  from: team_game_season_facts2
   always_filter: {
     filters: {
       field: game_nums.team_1
@@ -51,17 +52,16 @@ explore: team_1_facts {
       value: "2016"
     }
   }
-  from: team_game_season_facts
-  sql_always_where: ${team_1_facts.result} = 'W' ;;
+  sql_always_where: ${team_1_facts2.result} = 'W' ;;
   join: game_nums {
-    sql_on: ${game_nums.game_num} = ${team_1_facts.game_num}  ;;
+    sql_on: ${game_nums.game_num} = ${team_1_facts2.game_num}  ;;
     relationship: one_to_many
     type: full_outer_each
   }
   join: team_2_facts {
-    from: team_game_season_facts
-    sql_on: ${team_1_facts.opponent} = ${team_1_facts.team_id}
-      AND ${team_2_facts.daynum} = ${team_1_facts.daynum} AND ${team_1_facts.season} = ${team_2_facts.season}  ;;
+    from: team_game_season_facts2
+    sql_on: ${team_1_facts2.opponent} = ${team_2_facts.team_id}
+      AND ${team_2_facts.daynum} = ${team_1_facts2.daynum} AND ${team_1_facts2.season} = ${team_2_facts.season}  ;;
     relationship: one_to_one
     type: left_outer
   }

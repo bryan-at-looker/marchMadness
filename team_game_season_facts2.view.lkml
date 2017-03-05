@@ -1,27 +1,26 @@
-view: team_game_season_facts {
-#   derived_table: {
-#     sql:
-#       SELECT
-#         CONCAT( STRING(season) , "_" ,  game_type , "_",
-#         STRING(daynum)  , "_" , STRING(team) ) as primary_key,
-#         teams.team_id as team_id,
-#         teams.team_name  AS team_name,
-#         allRecords.game_type  AS game_type,
-#         allRecords.season  AS season,
-#         allRecords.opponent  AS opponent,
-#         allRecords.result  AS result,
-#         allRecords.daynum  AS daynum,
-#         SUM(CASE WHEN (allRecords.result = 'W') THEN 1 ELSE NULL END) OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS sum_wins,
-#         SUM(CASE WHEN (allRecords.result = 'L') THEN 1 ELSE NULL END)  OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS sum_losses,
-#         ROW_NUMBER() OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum) as game_num,
-#         SUM(allRecords.score) OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum) as running_score,
-#         SUM(allRecords.opponent_score) OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum) as running_opponent_score
-#       FROM ${allRecords.SQL_TABLE_NAME} AS allRecords
-#       LEFT JOIN marchMadness2017.teams  AS teams ON allRecords.team = teams.team_id
-#       ORDER BY teams.team_name, allRecords.season, allRecords.daynum
-#        ;;
-#   }
-  #     persist_for: "96 hours"
+view: team_game_season_facts2 {
+  derived_table: {
+    sql:
+      SELECT
+        CONCAT( STRING(season) , "_" ,  game_type , "_",
+        STRING(daynum)  , "_" , STRING(team) ) as primary_key,
+        teams.team_id as team_id,
+        allRecords.daynum  AS daynum,
+        teams.team_name  AS team_name,
+        allRecords.game_type  AS game_type,
+        allRecords.season  AS season,
+        allRecords.opponent  AS opponent,
+        allRecords.result  AS result,
+        SUM(CASE WHEN (allRecords.result = 'W') THEN 1 ELSE NULL END) OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS sum_wins,
+        SUM(CASE WHEN (allRecords.result = 'L') THEN 1 ELSE NULL END)  OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS sum_losses,
+        ROW_NUMBER() OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum) as game_num,
+        SUM(allRecords.score) OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum) as running_score,
+        SUM(allRecords.opponent_score) OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum) as running_opponent_score
+      FROM ${allRecords.SQL_TABLE_NAME} AS allRecords
+      LEFT JOIN marchMadness2017.teams  AS teams ON allRecords.team = teams.team_id
+      ORDER BY teams.team_name, allRecords.season, allRecords.daynum
+       ;;
+  }
 
   measure: count {
     type: count
