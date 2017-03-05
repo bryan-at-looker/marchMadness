@@ -18,7 +18,11 @@ view: team_game_season_facts2 {
         SUM(allRecords.opponent_score) OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum) as running_opponent_score
       FROM ${allRecords.SQL_TABLE_NAME} AS allRecords
       LEFT JOIN marchMadness2017.teams  AS teams ON allRecords.team = teams.team_id
+      WHERE {% condition game_nums.season %} STRING(allRecords.season) {% endcondition %}
+      AND ( {% condition game_nums.team_1 %} teams.team_name {% endcondition %}
+         OR {% condition game_nums.team_2 %} teams.team_name {% endcondition %} )
       ORDER BY teams.team_name, allRecords.season, allRecords.daynum
+
        ;;
   }
 
@@ -70,28 +74,29 @@ view: team_game_season_facts2 {
 
   dimension: sum_wins {
     type: number
-    sql: ${TABLE}.sum_wins ;;
+    sql: COALESCE ( ${TABLE}.sum_wins , 0 ) ;;
   }
 
   dimension: sum_losses {
     type: number
-    sql: ${TABLE}.sum_losses ;;
+    sql: COALESCE ( ${TABLE}.sum_losses , 0 ) ;;
   }
 
   dimension: record {
     type: string
-    sql: CONCAT( ${sum_wins},'-',${sum_losses} ) ;;
+    sql: CONCAT( STRING(${sum_wins}),'-',STRING(${sum_losses}) ) ;;
   }
 
   dimension: win_percentage {
     type: number
-    sql: ${sum_wins} / ${game_num} ;;
+    sql: 1.0 * ${sum_wins} / ${game_num} ;;
     value_format_name: percent_2
   }
 
   measure: win_percentage_2 {
     type: average
     sql: ${win_percentage} ;;
+    value_format_name: percent_2
   }
 
   dimension: game_num {

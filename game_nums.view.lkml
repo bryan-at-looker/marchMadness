@@ -6,15 +6,15 @@ view: game_nums {
 
   filter: team_1 {
     type: string
-    suggest_dimension: team_game_season_facts.team_name
+    suggest_dimension: teams.team_name
   }
   filter: team_2 {
     type: string
-    suggest_dimension: team_game_season_facts.team_name
+    suggest_dimension: teams.team_name
   }
   filter: season {
     type: string
-    suggest_dimension: team_game_season_facts.season
+    suggest_dimension: allRecords.season
   }
 
   measure: count {
@@ -23,6 +23,7 @@ view: game_nums {
   }
 
   dimension: game_num {
+    primary_key: yes
     type: number
     sql: ${TABLE}.game_num ;;
   }

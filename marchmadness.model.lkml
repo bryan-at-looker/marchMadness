@@ -1,3 +1,14 @@
+# From Geoff
+# Who has a team played,
+# their record,
+# the scores
+# what's their momentum?
+# Historical, coaching+previous year performance
+#
+# He looks at ESPN and CBS because the y are more in depth and have season recap paragraph
+# Individual PLayers? Maybe?
+
+
 connection: "zz_bq_test"
 
 # include all the views
@@ -36,8 +47,8 @@ explore: allRecords {
     sql_on: ${allRecords.primary_key} = ${team_game_season_facts.primary_key} ;;
   }
 }
-explore: team_1_facts2 {
-  from: team_game_season_facts2
+explore: game_nums {
+  from: game_nums
   always_filter: {
     filters: {
       field: game_nums.team_1
@@ -52,16 +63,15 @@ explore: team_1_facts2 {
       value: "2016"
     }
   }
-  sql_always_where: ${team_1_facts2.result} = 'W' ;;
-  join: game_nums {
-    sql_on: ${game_nums.game_num} = ${team_1_facts2.game_num}  ;;
-    relationship: one_to_many
-    type: full_outer_each
-  }
-  join: team_2_facts {
+  join: team_1_facts2 {
     from: team_game_season_facts2
-    sql_on: ${team_1_facts2.opponent} = ${team_2_facts.team_id}
-      AND ${team_2_facts.daynum} = ${team_1_facts2.daynum} AND ${team_1_facts2.season} = ${team_2_facts.season}  ;;
+    sql_on: ${game_nums.team_1} = ${team_1_facts2.team_name} AND  ${game_nums.game_num} = ${team_1_facts2.game_num} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+  join: team_2_facts2 {
+    from: team_game_season_facts2
+    sql_on: ${game_nums.team_2} = ${team_2_facts2.team_name} AND ${game_nums.game_num} = ${team_2_facts2.game_num}  ;;
     relationship: one_to_one
     type: left_outer
   }
