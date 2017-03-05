@@ -1,6 +1,7 @@
 view: allRecords {
   derived_table: {
-    sql: SELECT result, game_type, season, daynum, team, score, opponent, opponent_score, wloc, numot, fgm, fga, fgm3, fga3, ftm, fta, o_r, dr, ast, t_o, stl, blk, pf
+    sql:
+    SELECT result, game_type, season, daynum, team, score, opponent, opponent_score, wloc, numot, fgm, fga, fgm3, fga3, ftm, fta, o_r, dr, ast, t_o, stl, blk, pf
       FROM
       ( SELECT
         "W" as result, "Regular Season" as game_type, season as season, daynum as daynum, wteam as team, wscore as score, lteam as opponent, lscore as opponent_score, wloc as wloc, numot as numot, wfgm as fgm, wfga as fga, wfgm3 as fgm3, wfga3 as fga3, wftm as ftm, wfta as fta, wor as o_r, wdr as dr, wast as ast, wto as t_o, wstl as stl, wblk as blk, wpf as pf
@@ -15,7 +16,7 @@ view: allRecords {
         "L" as result, "NCAA Tournament" as game_type, season as season, daynum as daynum, lteam as team, lscore as score, wteam as opponent, wscore as opponent_score, wloc as wloc, numot as numot, lfgm as fgm, lfga as fga, lfgm3 as fgm3, lfga3 as fga3, lftm as ftm, lfta as fta, lor as o_r, ldr as dr, last as ast, lto as t_o, lstl as stl, lblk as blk, lpf as pf
         FROM marchMadness2017.tourneyDetailedResults)
        ;;
-    persist_for: "12 hour"
+    persist_for: "96 hours"
     #indexes: ["team","opponent"]
   }
 
@@ -24,6 +25,13 @@ view: allRecords {
     group_label: "Standings"
     type: count
     drill_fields: [detail*]
+  }
+
+  dimension: primary_key {
+    primary_key: yes
+    type: string
+    sql: CONCAT( STRING(${season}) , "_" ,  ${game_type} , "_"
+    , STRING(${daynum})  , "_" , STRING(${team}) ) ;;
   }
 
   dimension: result {
@@ -41,7 +49,7 @@ view: allRecords {
   }
 
   dimension: daynum {
-    hidden: yes
+    hidden: no
     type: number
     sql: ${TABLE}.daynum ;;
   }

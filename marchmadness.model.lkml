@@ -30,8 +30,42 @@ explore: allRecords {
     sql_on: ${allRecords.season} = ${seasons.season} ;;
     fields: [seasons.game_date_date]
   }
+  join: team_game_season_facts {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${allRecords.primary_key} = ${team_game_season_facts.primary_key} ;;
+  }
 }
-explore: a_test {}
+explore: team_1_facts {
+  always_filter: {
+    filters: {
+      field: game_nums.team_1
+      value: "Kansas"
+    }
+    filters: {
+      field: game_nums.team_2
+      value: "Duke"
+    }
+    filters: {
+      field: game_nums.season
+      value: "2016"
+    }
+  }
+  from: team_game_season_facts
+  sql_always_where: ${team_1_facts.result} = 'W' ;;
+  join: game_nums {
+    sql_on: ${game_nums.game_num} = ${team_1_facts.game_num}  ;;
+    relationship: one_to_many
+    type: full_outer_each
+  }
+  join: team_2_facts {
+    from: team_game_season_facts
+    sql_on: ${team_1_facts.opponent} = ${team_1_facts.team_id}
+      AND ${team_2_facts.daynum} = ${team_1_facts.daynum} AND ${team_1_facts.season} = ${team_2_facts.season}  ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+}
 
 # explore: seasons {
 #   join: allRecords {
