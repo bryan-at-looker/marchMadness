@@ -1,28 +1,13 @@
-view: team_game_season_facts2 {
+view: team_game_facts_union {
   derived_table: {
     sql:
-      SELECT
-        CONCAT( STRING(season) , "_" ,  game_type , "_",
-        STRING(daynum)  , "_" , STRING(team) ) as primary_key,
-        teams.team_id as team_id,
-        allRecords.daynum  AS daynum,
-        teams.team_name  AS team_name,
-        allRecords.game_type  AS game_type,
-        allRecords.season  AS season,
-        allRecords.opponent  AS opponent,
-        allRecords.result  AS result,
-        SUM(CASE WHEN (allRecords.result = 'W') THEN 1 ELSE NULL END) OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS sum_wins,
-        SUM(CASE WHEN (allRecords.result = 'L') THEN 1 ELSE NULL END)  OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS sum_losses,
-        ROW_NUMBER() OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum) as game_num,
-        SUM(allRecords.score) OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum) as running_score,
-        SUM(allRecords.opponent_score) OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum) as running_opponent_score
-      FROM ${allRecords.SQL_TABLE_NAME} AS allRecords
-      LEFT JOIN marchMadness2017.teams  AS teams ON allRecords.team = teams.team_id
-      WHERE {% condition game_nums.season %} STRING(allRecords.season) {% endcondition %}
-      AND ( {% condition game_nums.team_1 %} teams.team_name {% endcondition %}
-         OR {% condition game_nums.team_2 %} teams.team_name {% endcondition %} )
-      ORDER BY teams.team_name, allRecords.season, allRecords.daynum
-
+    SELECT *
+      FROM (
+        SELECT  * FROM ${team_game_season_facts.SQL_TABLE_NAME}
+        WHERE {% condition game_nums.team_1 %} teams.team_name {% endcondition %} ) , (
+        SELECT  * FROM ${team_game_season_facts.SQL_TABLE_NAME}
+        WHERE {% condition game_nums.team_2 %} teams.team_name {% endcondition %} )
+      ORDER BY teams.team_name, allRecords.season, allRecords.daynum )
        ;;
   }
 
@@ -130,4 +115,5 @@ view: team_game_season_facts2 {
       running_opponent_score
     ]
   }
+
 }

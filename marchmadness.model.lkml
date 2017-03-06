@@ -47,34 +47,46 @@ explore: allRecords {
     sql_on: ${allRecords.primary_key} = ${team_game_season_facts.primary_key} ;;
   }
 }
-explore: game_nums {
+explore: game_by_game_comparison {
   from: game_nums
   always_filter: {
     filters: {
-      field: game_nums.team_1
-      value: "Kansas"
+      field: game_by_game_comparison.team_1
+      value: "Villanova, UNC"
     }
+#     filters: {
+#       field: game_nums.team_2
+#       value: "Duke"
+#     }
     filters: {
-      field: game_nums.team_2
-      value: "Duke"
-    }
-    filters: {
-      field: game_nums.season
+      field: game_by_game_comparison.season
       value: "2016"
     }
   }
-  join: team_1_facts2 {
-    from: team_game_season_facts2
-    sql_on: ${game_nums.team_1} = ${team_1_facts2.team_name} AND  ${game_nums.game_num} = ${team_1_facts2.game_num} ;;
+  join: teams {
+    type: cross
+    fields: []
+  }
+
+  join: team_game_season_facts {
+    sql_on: ${game_by_game_comparison.game_num} = ${team_game_season_facts.game_num} ;;
+    relationship: one_to_one
+    type: inner
+  }
+  join: allRecords {
+    sql_on: ${team_game_season_facts.primary_key} = ${allRecords.primary_key} ;;
     relationship: one_to_one
     type: left_outer
   }
-  join: team_2_facts2 {
-    from: team_game_season_facts2
-    sql_on: ${game_nums.team_2} = ${team_2_facts2.team_name} AND ${game_nums.game_num} = ${team_2_facts2.game_num}  ;;
-    relationship: one_to_one
-    type: left_outer
-  }
+
+
+#   join: team_2_facts2 {
+#     from: team_game_season_facts2
+#     sql_on: ${game_nums.game_num} = ${team_2_facts2.game_num}  ;;
+#     relationship: one_to_one
+#     type: left_outer
+#   }
+#   sql_always_where: ${team_1_facts.primary_key} is not null OR ${team_2_facts2.primary_key} is not null ;;
 }
 
 # explore: seasons {

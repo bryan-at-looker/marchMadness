@@ -5,12 +5,10 @@ view: game_nums {
   }
 
   filter: team_1 {
+    label: "Select Team"
     type: string
     suggest_dimension: teams.team_name
-  }
-  filter: team_2 {
-    type: string
-    suggest_dimension: teams.team_name
+    full_suggestions: yes
   }
   filter: season {
     type: string

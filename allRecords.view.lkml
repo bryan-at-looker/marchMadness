@@ -1,7 +1,9 @@
 view: allRecords {
   derived_table: {
     sql:
-    SELECT result, game_type, season, daynum, team, score, opponent, opponent_score, wloc, numot, fgm, fga, fgm3, fga3, ftm, fta, o_r, dr, ast, t_o, stl, blk, pf
+    SELECT CONCAT( STRING(season) , "_" ,  game_type , "_",
+        STRING(daynum)  , "_" , STRING(team) ) as primary_key,
+        result, game_type, season, daynum, team, score, opponent, opponent_score, wloc, numot, fgm, fga, fgm3, fga3, ftm, fta, o_r, dr, ast, t_o, stl, blk, pf
       FROM
       ( SELECT
         "W" as result, "Regular Season" as game_type, season as season, daynum as daynum, wteam as team, wscore as score, lteam as opponent, lscore as opponent_score, wloc as wloc, numot as numot, wfgm as fgm, wfga as fga, wfgm3 as fgm3, wfga3 as fga3, wftm as ftm, wfta as fta, wor as o_r, wdr as dr, wast as ast, wto as t_o, wstl as stl, wblk as blk, wpf as pf
@@ -30,8 +32,9 @@ view: allRecords {
   dimension: primary_key {
     primary_key: yes
     type: string
-    sql: CONCAT( STRING(${season}) , "_" ,  ${game_type} , "_"
-    , STRING(${daynum})  , "_" , STRING(${team}) ) ;;
+    sql: ${TABLE}.primary_key ;;
+#     sql: CONCAT( STRING(${season}) , "_" ,  ${game_type} , "_"
+#     , STRING(${daynum})  , "_" , STRING(${team}) ) ;;
   }
 
   dimension: result {
@@ -292,7 +295,7 @@ view: allRecords {
   measure: points_allowed_per_game {
     group_label: "Stats"
     type: average
-    sql: ${score} ;;
+    sql: ${opponent_score} ;;
     value_format_name: decimal_1
   }
 
