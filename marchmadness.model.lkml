@@ -19,6 +19,8 @@ include: "*.dashboard"
 
 #explore: regular_season_compact_results {}
 
+explore: source_key_table {}
+
 explore: allRecords {
   join: teams {
     from: teams
@@ -52,7 +54,7 @@ explore: game_by_game_comparison {
   always_filter: {
     filters: {
       field: game_by_game_comparison.team_1
-      value: "Villanova, UNC"
+      value: "Villanova, North Carolina"
     }
 #     filters: {
 #       field: game_nums.team_2
@@ -78,7 +80,17 @@ explore: game_by_game_comparison {
     relationship: one_to_one
     type: left_outer
   }
-
+  join: strength_of_schedule {
+    sql_on: ${team_game_season_facts.team_id} = ${strength_of_schedule.team_id} AND ${allRecords.season} = ${strength_of_schedule.season};;
+    relationship: many_to_one
+    type: left_outer
+  }
+  join: source_key_table {
+    sql_on: ${team_game_season_facts.team_id} = ${source_key_table.primary_key} ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+}
 
 #   join: team_2_facts2 {
 #     from: team_game_season_facts2
@@ -87,7 +99,7 @@ explore: game_by_game_comparison {
 #     type: left_outer
 #   }
 #   sql_always_where: ${team_1_facts.primary_key} is not null OR ${team_2_facts2.primary_key} is not null ;;
-}
+
 
 # explore: seasons {
 #   join: allRecords {

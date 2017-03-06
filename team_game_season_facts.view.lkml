@@ -15,7 +15,10 @@ view: team_game_season_facts {
         SUM(CASE WHEN (allRecords.result = 'L') THEN 1 ELSE NULL END)  OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS sum_losses,
         ROW_NUMBER() OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum) as game_num,
         SUM(allRecords.score) OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum) as running_score,
-        SUM(allRecords.opponent_score) OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum) as running_opponent_score
+        SUM(allRecords.opponent_score) OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum) as running_opponent_score,
+        SUM(CASE WHEN (allRecords.result = 'W') THEN 1 ELSE NULL END) OVER (PARTITION BY teams.team_id, allRecords.season) as season_wins,
+        SUM(CASE WHEN (allRecords.result = 'L') THEN 1 ELSE NULL END) OVER (PARTITION BY teams.team_id, allRecords.season) as season_losses
+
       FROM ${allRecords.SQL_TABLE_NAME} AS allRecords
       LEFT JOIN marchMadness2017.teams  AS teams ON allRecords.team = teams.team_id
       WHERE {% condition game_by_game_comparison.season %} STRING(allRecords.season) {% endcondition %}
@@ -80,9 +83,23 @@ view: team_game_season_facts {
     sql: COALESCE ( ${TABLE}.sum_losses , 0 ) ;;
   }
 
+  dimension: season_wins {
+    type: number
+    sql: ${TABLE}.season_wins ;;
+  }
+  dimension: season_losses {
+    type: number
+    sql: ${TABLE}.season_losses ;;
+  }
+
   dimension: record {
     type: string
     sql: CONCAT( STRING(${sum_wins}),'-',STRING(${sum_losses}) ) ;;
+  }
+
+  dimension: final_record {
+    type: string
+    sql: CONCAT( STRING(${season_wins}),'-',STRING(${season_losses}) ) ;;
   }
 
   dimension: win_percentage {
