@@ -102,6 +102,11 @@ view: team_game_season_facts {
     sql: CONCAT( STRING(${season_wins}),'-',STRING(${season_losses}) ) ;;
   }
 
+  measure: max_final_record {
+    type: max
+    sql: ${final_record} ;;
+  }
+
   dimension: win_percentage {
     type: number
     sql: 1.0 * ${sum_wins} / ${game_num} ;;
