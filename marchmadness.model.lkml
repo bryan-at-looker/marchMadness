@@ -19,6 +19,18 @@ include: "*.dashboard"
 
 #explore: regular_season_compact_results {}
 
+explore: head_to_head {
+  extends: [game_by_game_comparison]
+  always_join: [opponent_facts]
+  join: opponent_facts {
+    from: team_game_season_h2h
+    sql_on: ${team_game_season_facts.primary_key} = ${opponent_facts.primary_key} ;;
+    relationship: one_to_one
+    type: inner
+    fields: []
+  }
+
+}
 explore: source_key_table {}
 
 explore: allRecords {
@@ -50,26 +62,18 @@ explore: allRecords {
   }
 }
 explore: game_by_game_comparison {
+  view_name: game_by_game_comparison
   from: game_nums
   always_filter: {
     filters: {
       field: game_by_game_comparison.team_1
       value: "Villanova, North Carolina"
     }
-#     filters: {
-#       field: game_nums.team_2
-#       value: "Duke"
-#     }
     filters: {
       field: game_by_game_comparison.season
       value: "2016"
     }
   }
-  join: teams {
-    type: cross
-    fields: []
-  }
-
   join: team_game_season_facts {
     sql_on: ${game_by_game_comparison.game_num} = ${team_game_season_facts.game_num} ;;
     relationship: one_to_one
@@ -91,6 +95,7 @@ explore: game_by_game_comparison {
     relationship: many_to_one
   }
 }
+
 
 #   join: team_2_facts2 {
 #     from: team_game_season_facts2

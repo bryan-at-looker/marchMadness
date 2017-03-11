@@ -12,7 +12,7 @@ view: game_nums {
   }
   filter: season {
     type: string
-    suggest_dimension: allRecords.season
+    suggestions: ["2014","2015","2016"]
   }
 
   measure: count {

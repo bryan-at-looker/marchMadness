@@ -2,11 +2,13 @@ view: team_game_season_facts {
   derived_table: {
     sql:
       SELECT
-        CONCAT( STRING(season) , "_" ,  game_type , "_",
+        CONCAT( STRING(allRecords.season) , "_" ,  game_type , "_",
         STRING(daynum)  , "_" , STRING(team) ) as primary_key,
         teams.team_id as team_id,
         allRecords.daynum  AS daynum,
+        DATE(DATE_ADD(TIMESTAMP(season_view.dayzero), allRecords.daynum, "DAY")) as game_date,
         teams.team_name  AS team_name,
+        opponent.team_name as opponent_name,
         allRecords.game_type  AS game_type,
         allRecords.season  AS season,
         allRecords.opponent  AS opponent,
@@ -21,11 +23,15 @@ view: team_game_season_facts {
 
       FROM ${allRecords.SQL_TABLE_NAME} AS allRecords
       LEFT JOIN marchMadness2017.teams  AS teams ON allRecords.team = teams.team_id
+      LEFT JOIN marchMadness2017.teams  AS opponent ON allRecords.opponent = opponent.team_id
+      LEFT JOIN marchMadness2017.seasons AS season_view ON allRecords.season = season_view.season
       WHERE {% condition game_by_game_comparison.season %} STRING(allRecords.season) {% endcondition %}
        AND ( {% condition game_by_game_comparison.team_1 %} teams.team_name {% endcondition %}  )
       ORDER BY teams.team_name, allRecords.season, allRecords.daynum
        ;;
   }
+
+
 
   measure: count {
     type: count
@@ -48,6 +54,11 @@ view: team_game_season_facts {
     sql: ${TABLE}.team_name ;;
   }
 
+  measure: measure_team_name {
+    type: string
+    sql: MAX(${team_name}) ;;
+  }
+
   dimension: game_type {
     type: string
     sql: ${TABLE}.game_type ;;
@@ -63,14 +74,40 @@ view: team_game_season_facts {
     sql: ${TABLE}.opponent ;;
   }
 
+   dimension: opponent_name {
+    type: string
+    sql: ${TABLE}.opponent_name ;;
+  }
+
+  dimension: matchup {
+    type: string
+    sql: CASE WHEN ${result} = 'W' THEN CONCAT( ${team_name}, '-', ${opponent_name} )
+              WHEN ${result} = 'L' THEN CONCAT( ${opponent_name}, '-', ${team_name} )
+              ELSE null END;;
+  }
+
   dimension: daynum {
     type: number
     sql: ${TABLE}.daynum ;;
+    html: <a href="http://www.google.com/search?q=site:espn.com+ncaa+men+basketball+{{team_game_season_facts.matchup._value | url_encode}}+{{allRecords.final_score._value | url_encode}}&btnI=1"> {{value}} </a>;;
   }
+
+  dimension_group: game {
+    type: time
+    timeframes: [date,week,month]
+    sql: ${TABLE}.game_date ;;
+    html: <a href="http://www.google.com/search?q=site:espn.com+ncaa+men+basketball+{{team_game_season_facts.matchup._value | url_encode}}+{{allRecords.final_score._value | url_encode}}&btnI=1"> {{value}} </a>;;
+  }
+
 
   dimension: result {
     type: string
     sql: ${TABLE}.result ;;
+  }
+
+  dimension: result_expanded {
+    type: string
+    sql: CASE  WHEN ${result} = 'W' THEN 'Winner' WHEN ${result}='L' THEN 'Loser' ELSE null END ;;
   }
 
   dimension: sum_wins {
@@ -97,14 +134,30 @@ view: team_game_season_facts {
     sql: CONCAT( STRING(${sum_wins}),'-',STRING(${sum_losses}) ) ;;
   }
 
+  measure: record_measure {
+    type: string
+    sql: MAX(${record}) ;;
+  }
+
   dimension: final_record {
     type: string
     sql: CONCAT( STRING(${season_wins}),'-',STRING(${season_losses}) ) ;;
   }
 
   measure: max_final_record {
-    type: max
-    sql: ${final_record} ;;
+    type: string
+    sql: MAX(${final_record}) ;;
+  }
+
+  dimension: pregame_record {
+    type: string
+    sql: CASE WHEN ${result} = 'W' THEN CONCAT( STRING(${sum_wins}-1),'-',STRING(${sum_losses}) )
+              WHEN ${result} = 'L' THEN CONCAT( STRING(${sum_wins}-1),'-',STRING(${sum_losses}-1) ) END;;
+  }
+
+  measure: measure_pregame_record{
+    type: string
+    sql: MAX(${pregame_record}) ;;
   }
 
   dimension: win_percentage {

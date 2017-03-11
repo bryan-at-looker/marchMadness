@@ -1,19 +1,11 @@
-view: team_game_facts_union {
+view: team_game_season_h2h {
   derived_table: {
-    sql:
-    SELECT *
-      FROM (
-        SELECT  * FROM ${team_game_season_facts.SQL_TABLE_NAME}
-        WHERE {% condition game_nums.team_1 %} teams.team_name {% endcondition %} ) , (
-        SELECT  * FROM ${team_game_season_facts.SQL_TABLE_NAME}
-        WHERE {% condition game_nums.team_2 %} teams.team_name {% endcondition %} )
-      ORDER BY teams.team_name, allRecords.season, allRecords.daynum )
-       ;;
+    sql: SELECT * FROM ${team_game_season_facts.SQL_TABLE_NAME}
+    WHERE opponent IN (SELECT team_id FROM ${team_game_season_facts.SQL_TABLE_NAME} )  ;;
   }
 
   measure: count {
     type: count
-    drill_fields: [detail*]
   }
 
   dimension: primary_key {
@@ -30,6 +22,12 @@ view: team_game_facts_union {
   dimension: team_name {
     type: string
     sql: ${TABLE}.team_name ;;
+  }
+
+  measure: measure_team_name {
+    type: max
+    sql: ${team_name} ;;
+    html: {{value}} ;;
   }
 
   dimension: game_type {
@@ -54,7 +52,7 @@ view: team_game_facts_union {
 
   dimension: result {
     type: string
-    sql: ${TABLE}.result ;;
+    sql: CASE ${TABLE}.result WHEN 'W' THEN 'Winner' WHEN 'L' THEN 'Loser' ELSE null END ;;
   }
 
   dimension: sum_wins {
@@ -67,9 +65,44 @@ view: team_game_facts_union {
     sql: COALESCE ( ${TABLE}.sum_losses , 0 ) ;;
   }
 
+  dimension: season_wins {
+    type: number
+    sql: ${TABLE}.season_wins ;;
+  }
+  dimension: season_losses {
+    type: number
+    sql: ${TABLE}.season_losses ;;
+  }
+
   dimension: record {
     type: string
     sql: CONCAT( STRING(${sum_wins}),'-',STRING(${sum_losses}) ) ;;
+  }
+
+  measure: record_measure {
+    type: max
+    sql: ${record} ;;
+  }
+
+  dimension: final_record {
+    type: string
+    sql: CONCAT( STRING(${season_wins}),'-',STRING(${season_losses}) ) ;;
+  }
+
+  measure: max_final_record {
+    type: max
+    sql: ${final_record} ;;
+  }
+
+  dimension: pregame_record {
+    type: string
+    sql: CASE WHEN ${result} = 'W' THEN CONCAT( STRING(${season_wins}-1),'-',STRING(${season_losses}) )
+      WHEN ${result} = 'L' THEN CONCAT( STRING(${season_wins}-1),'-',STRING(${season_losses}-1) ) END;;
+  }
+
+  measure: measure_pregame_record{
+    type: max
+    sql: ${final_record} ;;
   }
 
   dimension: win_percentage {
@@ -97,23 +130,6 @@ view: team_game_facts_union {
   dimension: running_opponent_score {
     type: number
     sql: ${TABLE}.running_opponent_score ;;
-  }
-
-  set: detail {
-    fields: [
-      team_id,
-      team_name,
-      game_type,
-      season,
-      opponent,
-      daynum,
-      result,
-      sum_wins,
-      sum_losses,
-      game_num,
-      running_score,
-      running_opponent_score
-    ]
   }
 
 }

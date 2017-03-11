@@ -72,6 +72,13 @@ view: allRecords {
     sql: ${TABLE}.opponent ;;
   }
 
+  dimension: final_score {
+    type: string
+    sql: CASE WHEN ${result} = 'W' THEN CONCAT ( STRING(${score}), '-', STRING(${opponent_score}) )
+              WHEN ${result} = 'L' THEN CONCAT ( STRING(${opponent_score}), '-', STRING(${score}) )
+              ELSE null END;;
+  }
+
   dimension: opponent_score {
     type: number
     sql: ${TABLE}.opponent_score ;;
