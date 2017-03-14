@@ -7,12 +7,13 @@ view: game_nums {
   filter: team_1 {
     label: "Select Team"
     type: string
-    suggest_dimension: teams.team_name
+    suggest_explore: suggest_teams
+    suggest_dimension: suggest_teams.team
     full_suggestions: yes
   }
   filter: season {
     type: string
-    suggestions: ["2014","2015","2016"]
+    suggestions: ["2014","2015","2016", "2017"]
   }
 
   measure: count {

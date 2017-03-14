@@ -1,4 +1,4 @@
-view: team_game_season_facts {
+view: opponent_game_season_facts {
   derived_table: {
     sql:
       SELECT
@@ -13,7 +13,6 @@ view: team_game_season_facts {
         allRecords.season  AS season,
         allRecords.opponent  AS opponent,
         allRecords.result  AS result,
-        teams.espn_id as espn_id,
         SUM(CASE WHEN (allRecords.result = 'W') THEN 1 ELSE NULL END) OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS sum_wins,
         SUM(CASE WHEN (allRecords.result = 'L') THEN 1 ELSE NULL END)  OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS sum_losses,
         ROW_NUMBER() OVER (PARTITION BY teams.team_id, allRecords.season ORDER BY allRecords.daynum) as game_num,
@@ -27,7 +26,7 @@ view: team_game_season_facts {
       LEFT JOIN marchMadness2017.new_teams  AS opponent ON allRecords.opponent = opponent.team_id
       LEFT JOIN marchMadness2017.seasons AS season_view ON allRecords.season = season_view.season
       WHERE {% condition game_by_game_comparison.season %} STRING(allRecords.season) {% endcondition %}
-       AND ( {% condition game_by_game_comparison.team_1 %} teams.team {% endcondition %}  )
+       AND ( teams.team_id IN ( SELECT opponent FROM ${team_game_season_mOpp.SQL_TABLE_NAME} ) )
       ORDER BY teams.team, allRecords.season, allRecords.daynum
        ;;
   }
@@ -75,7 +74,7 @@ view: team_game_season_facts {
     sql: ${TABLE}.opponent ;;
   }
 
-   dimension: opponent_name {
+  dimension: opponent_name {
     type: string
     sql: ${TABLE}.opponent_name ;;
   }
@@ -90,13 +89,14 @@ view: team_game_season_facts {
   dimension: daynum {
     type: number
     sql: ${TABLE}.daynum ;;
+    html: <a href="http://www.google.com/search?q=site:espn.com+ncaa+men+basketball+{{team_game_season_facts.matchup._value | url_encode}}+{{allRecords.final_score._value | url_encode}}&btnI=1"> {{value}} </a>;;
   }
 
   dimension_group: game {
     type: time
     timeframes: [date,week,month]
     sql: ${TABLE}.game_date ;;
-    html: <a href="http://www.google.com/search?btnI&q=ncaa+game+summary+{{team_game_season_facts.matchup._value | url_encode | replace:'-','+'}}+{{allRecords.final_score._value | | replace:'-','+'}}+site:espn.com"> {{value}} </a>;;
+    html: <a href="http://www.google.com/search?q=site:espn.com+ncaa+men+basketball+{{team_game_season_facts.matchup._value | url_encode}}+{{allRecords.final_score._value | url_encode}}&btnI=1"> {{value}} </a>;;
   }
 
 
@@ -152,7 +152,7 @@ view: team_game_season_facts {
   dimension: pregame_record {
     type: string
     sql: CASE WHEN ${result} = 'W' THEN CONCAT( STRING(${sum_wins}-1),'-',STRING(${sum_losses}) )
-              WHEN ${result} = 'L' THEN CONCAT( STRING(${sum_wins}-1),'-',STRING(${sum_losses}-1) ) END;;
+      WHEN ${result} = 'L' THEN CONCAT( STRING(${sum_wins}-1),'-',STRING(${sum_losses}-1) ) END;;
   }
 
   measure: measure_pregame_record{
@@ -185,24 +185,6 @@ view: team_game_season_facts {
   dimension: running_opponent_score {
     type: number
     sql: ${TABLE}.running_opponent_score ;;
-  }
-
-  dimension: espn_id {
-    type: string
-    sql: STRING(${TABLE}.espn_id) ;;
-  }
-
-  measure: espn_url_id {
-    label: " "
-
-    type: max
-    sql: ${espn_id} ;;
-    link: {
-      label: "ESPN"
-      url: "http://www.espn.com/mens-college-basketball/team/_/id/{{rendered_value}}/"
-      icon_url: "http://a.espncdn.com/favicon.ico"
-    }
-    html: <a href="http://www.espn.com/mens-college-basketball/team/_/id/{{rendered_value}}/"> <img style="margin:0px auto;display:block;h:auto;w:100%" src="http://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/{{rendered_value}}.png&h=150&w=150"/> <p style="font-size:160%;" align="center">{{team_game_season_facts.max_final_record._value}} </p>  </a> ;;
   }
 
 

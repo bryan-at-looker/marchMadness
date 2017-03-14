@@ -19,20 +19,6 @@ include: "*.dashboard"
 
 #explore: regular_season_compact_results {}
 
-explore: head_to_head {
-  extends: [game_by_game_comparison]
-  always_join: [opponent_facts]
-  join: opponent_facts {
-    from: team_game_season_h2h
-    sql_on: ${team_game_season_facts.primary_key} = ${opponent_facts.primary_key} ;;
-    relationship: one_to_one
-    type: inner
-    fields: []
-  }
-
-}
-explore: source_key_table {}
-
 explore: allRecords {
   join: teams {
     from: teams
@@ -45,7 +31,7 @@ explore: allRecords {
     from: teams
     view_label: "Opponents"
     type: left_outer
-    sql_on: ${allRecords.opponent} = ${opponent.team_id}  ;;
+    sql_on: ${allRecords.opponent} = INTEGER(${opponent.team_id})  ;;
     relationship: many_to_one
   }
   join: seasons {
@@ -84,17 +70,52 @@ explore: game_by_game_comparison {
     relationship: one_to_one
     type: left_outer
   }
-  join: strength_of_schedule {
-    sql_on: ${team_game_season_facts.team_id} = ${strength_of_schedule.team_id} AND ${allRecords.season} = ${strength_of_schedule.season};;
+  join: teams {
+    sql_on: ${allRecords.team} = ${teams.team_id} ;;
     relationship: many_to_one
     type: left_outer
-  }
-  join: source_key_table {
-    sql_on: ${team_game_season_facts.team_id} = ${source_key_table.primary_key} ;;
-    type: left_outer
-    relationship: many_to_one
   }
 }
+
+explore: suggest_teams {
+  from: suggest_teams
+  hidden: yes
+}
+
+explore: head_to_head {
+  extends: [game_by_game_comparison]
+  always_join: [opponent_facts]
+  join: opponent_facts {
+    from: team_game_season_h2h
+    sql_on: ${team_game_season_facts.primary_key} = ${opponent_facts.primary_key} ;;
+    relationship: one_to_one
+    type: inner
+    fields: []
+  }
+
+}
+
+explore: mutual_opponents {
+  extends: [game_by_game_comparison]
+  always_join: [opponent_facts]
+  sql_always_where: ${opponent_facts.count_opponent} > 1 ;;
+  join: opponent_facts {
+    from: team_game_season_mOpp
+    sql_on: ${team_game_season_facts.primary_key} = ${opponent_facts.primary_key} ;;
+    relationship: one_to_one
+    type: inner
+    fields: []
+  }
+  join: opponent_game_season_facts {
+    sql_on: ${team_game_season_facts.opponent} = ${opponent_game_season_facts.team_id}
+      AND ${allRecords.daynum} = ${opponent_game_season_facts.daynum} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+}
+
+# explore: source_key_table {}
+
 
 
 #   join: team_2_facts2 {
