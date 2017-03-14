@@ -53,11 +53,11 @@ explore: game_by_game_comparison {
   always_filter: {
     filters: {
       field: game_by_game_comparison.team_1
-      value: "Villanova, North Carolina"
+      value: "Villanova, North Carolina, Kansas, Gonzaga"
     }
     filters: {
       field: game_by_game_comparison.season
-      value: "2016"
+      value: "2017"
     }
   }
   join: team_game_season_facts {
