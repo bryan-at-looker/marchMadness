@@ -15,6 +15,7 @@ view: seasons {
     sql: ${TABLE}.dayzero ;;
   }
 
+#     html: <a href="http://www.espn.com/mens-college-basketball/matchup/_/gameId/"{{allRecords.game_num._value}} > {{value}} </a> ;;
   dimension_group: game_date {
     type: time
     group_label: "Game Data"

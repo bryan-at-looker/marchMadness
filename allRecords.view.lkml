@@ -6,24 +6,24 @@ view: allRecords {
         result, game_type, season, daynum, STRING(team) as team, score, STRING(opponent) as opponent, opponent_score, wloc, numot, fgm, fga, fgm3, fga3, ftm, fta, o_r, dr, ast, t_o, stl, blk, pf
       FROM
       ( SELECT
-        "W" as result, "Regular Season" as game_type, season as season, daynum as daynum, wteam as team, wscore as score, lteam as opponent, lscore as opponent_score, wloc as wloc, numot as numot, wfgm as fgm, wfga as fga, wfgm3 as fgm3, wfga3 as fga3, wftm as ftm, wfta as fta, wor as o_r, wdr as dr, wast as ast, wto as t_o, wstl as stl, wblk as blk, wpf as pf
+        "W" as result, "Regular Season" as game_type, season as season, daynum as daynum, wteam as team, wscore as score, lteam as opponent, lscore as opponent_score, wloc as wloc, numot as numot, wfgm as fgm, wfga as fga, wfgm3 as fgm3, wfga3 as fga3, wftm as ftm, wfta as fta, wor as o_r, wdr as dr, wast as ast, wto as t_o, wstl as stl, wblk as blk, wpf as pf, null as game_num
         FROM marchMadness2017.regularSeasonDetailedResults),
       ( SELECT
-        "L" as result, "Regular Season" as game_type, season as season, daynum as daynum, lteam as team, lscore as score, wteam as opponent, wscore as opponent_score, wloc as wloc, numot as numot, lfgm as fgm, lfga as fga, lfgm3 as fgm3, lfga3 as fga3, lftm as ftm, lfta as fta, lor as o_r, ldr as dr, last as ast, lto as t_o, lstl as stl, lblk as blk, lpf as pf
+        "L" as result, "Regular Season" as game_type, season as season, daynum as daynum, lteam as team, lscore as score, wteam as opponent, wscore as opponent_score, wloc as wloc, numot as numot, lfgm as fgm, lfga as fga, lfgm3 as fgm3, lfga3 as fga3, lftm as ftm, lfta as fta, lor as o_r, ldr as dr, last as ast, lto as t_o, lstl as stl, lblk as blk, lpf as pf, null as game_num
         FROM marchMadness2017.regularSeasonDetailedResults),
       ( SELECT
-        "W" as result, "NCAA Tournament" as game_type, season as season, daynum as daynum, wteam as team, wscore as score, lteam as opponent, lscore as opponent_score, wloc as wloc, numot as numot, wfgm as fgm, wfga as fga, wfgm3 as fgm3, wfga3 as fga3, wftm as ftm, wfta as fta, wor as o_r, wdr as dr, wast as ast, wto as t_o, wstl as stl, wblk as blk, wpf as pf
+        "W" as result, "NCAA Tournament" as game_type, season as season, daynum as daynum, wteam as team, wscore as score, lteam as opponent, lscore as opponent_score, wloc as wloc, numot as numot, wfgm as fgm, wfga as fga, wfgm3 as fgm3, wfga3 as fga3, wftm as ftm, wfta as fta, wor as o_r, wdr as dr, wast as ast, wto as t_o, wstl as stl, wblk as blk, wpf as pf, null as game_num
         FROM marchMadness2017.tourneyDetailedResults),
       ( SELECT
-        "L" as result, "NCAA Tournament" as game_type, season as season, daynum as daynum, lteam as team, lscore as score, wteam as opponent, wscore as opponent_score, wloc as wloc, numot as numot, lfgm as fgm, lfga as fga, lfgm3 as fgm3, lfga3 as fga3, lftm as ftm, lfta as fta, lor as o_r, ldr as dr, last as ast, lto as t_o, lstl as stl, lblk as blk, lpf as pf
+        "L" as result, "NCAA Tournament" as game_type, season as season, daynum as daynum, lteam as team, lscore as score, wteam as opponent, wscore as opponent_score, wloc as wloc, numot as numot, lfgm as fgm, lfga as fga, lfgm3 as fgm3, lfga3 as fga3, lftm as ftm, lfta as fta, lor as o_r, ldr as dr, last as ast, lto as t_o, lstl as stl, lblk as blk, lpf as pf, null as game_num
         FROM marchMadness2017.tourneyDetailedResults),
       ( SELECT
-        "W" as result, "Regular Season" as game_type, season2017.season as season, season2017.daynum as daynum, INTEGER(t.team_id) as team, season2017.wscore as score, INTEGER(o.team_id) as opponent, season2017.lscore as opponent_score, season2017.wloc as wloc, season2017.numot as numot, season2017.wfgm as fgm, season2017.wfga as fga, season2017.wfgm3 as fgm3, season2017.wfga3 as fga3, season2017.wftm as ftm, season2017.wfta as fta, season2017.wor as o_r, season2017.wdr as dr, season2017.wast as ast, season2017.wto as t_o, season2017.wstl as stl, season2017.wblk as blk, season2017.wpf as pf
+        "W" as result, "Regular Season" as game_type, season2017.season as season, season2017.daynum as daynum, INTEGER(t.team_id) as team, season2017.wscore as score, INTEGER(o.team_id) as opponent, season2017.lscore as opponent_score, season2017.wloc as wloc, season2017.numot as numot, season2017.wfgm as fgm, season2017.wfga as fga, season2017.wfgm3 as fgm3, season2017.wfga3 as fga3, season2017.wftm as ftm, season2017.wfta as fta, season2017.wor as o_r, season2017.wdr as dr, season2017.wast as ast, season2017.wto as t_o, season2017.wstl as stl, season2017.wblk as blk, season2017.wpf as pf, season2017.game_num as game_num
         FROM marchMadness2017.season2017 as season2017
         INNER JOIN marchMadness2017.new_teams as t ON t.espn_id = season2017.wteam
         INNER JOIN marchMadness2017.new_teams as o ON o.espn_id = season2017.lteam),
       ( SELECT
-        "L" as result, "Regular Season" as game_type, season2017.season as season, season2017.daynum as daynum, INTEGER(t.team_id) as team, season2017.lscore as score, INTEGER(o.team_id) as opponent, season2017.wscore as opponent_score, season2017.wloc as wloc, season2017.numot as numot, season2017.lfgm as fgm, season2017.lfga as fga, season2017.lfgm3 as fgm3, season2017.lfga3 as fga3, season2017.lftm as ftm, season2017.lfta as fta, season2017.lor as o_r, season2017.ldr as dr, season2017.last as ast, season2017.lto as t_o, season2017.lstl as stl, season2017.lblk as blk, season2017.lpf as pf
+        "L" as result, "Regular Season" as game_type, season2017.season as season, season2017.daynum as daynum, INTEGER(t.team_id) as team, season2017.lscore as score, INTEGER(o.team_id) as opponent, season2017.wscore as opponent_score, season2017.wloc as wloc, season2017.numot as numot, season2017.lfgm as fgm, season2017.lfga as fga, season2017.lfgm3 as fgm3, season2017.lfga3 as fga3, season2017.lftm as ftm, season2017.lfta as fta, season2017.lor as o_r, season2017.ldr as dr, season2017.last as ast, season2017.lto as t_o, season2017.lstl as stl, season2017.lblk as blk, season2017.lpf as pf, season2017.game_num as game_num
         FROM marchMadness2017.season2017 as season2017
         INNER JOIN marchMadness2017.new_teams as t ON t.espn_id = season2017.lteam
         INNER JOIN marchMadness2017.new_teams as o ON o.espn_id = season2017.wteam
@@ -38,6 +38,11 @@ view: allRecords {
     group_label: "Standings"
     type: count
     drill_fields: [detail*]
+  }
+
+  dimension: game_num {
+    sql: ${TABLE}.game_num ;;
+    type: number
   }
 
   dimension: primary_key {

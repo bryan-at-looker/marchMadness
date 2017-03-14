@@ -96,7 +96,7 @@ view: team_game_season_facts {
     type: time
     timeframes: [date,week,month]
     sql: ${TABLE}.game_date ;;
-    html: <a href="http://www.google.com/search?btnI&q=ncaa+game+summary+{{team_game_season_facts.matchup._value | url_encode | replace:'-','+'}}+{{allRecords.final_score._value | | replace:'-','+'}}+site:espn.com"> {{value}} </a>;;
+#     html: <a href="http://www.google.com/search?btnI&q=ncaa+game+summary+{{team_game_season_facts.matchup._value | url_encode | replace:'-','+'}}+{{allRecords.final_score._value | | replace:'-','+'}}+site:espn.com"> {{value}} </a>;;
   }
 
 
