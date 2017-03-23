@@ -92,6 +92,16 @@ explore: head_to_head {
     type: inner
     fields: []
   }
+}
+
+explore: team_averages {
+  extends: [game_by_game_comparison]
+  always_join: [tourney_team_game_facts]
+  join: tourney_team_game_facts {
+    sql_on: ${game_by_game_comparison.game_num} = ${tourney_team_game_facts.game_num} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
 
 }
 

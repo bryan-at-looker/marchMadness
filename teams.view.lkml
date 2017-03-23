@@ -75,6 +75,19 @@ view: teams {
     html: <a href="http://www.espn.com/mens-college-basketball/team/_/id/{{rendered_value}}/"> <img style="margin:0px auto;display:block;h:auto;w:100%" src="http://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/{{rendered_value}}.png&h=150&w=150"/> <p style="font-size:160%;" align="center">{{team_game_season_facts.max_final_record._value}} </p>  </a> ;;
   }
 
+  measure: gonzaga_test {
+    type: max
+    sql: ${espn_id} ;;
+    html: <a href="http://www.espn.com/mens-college-basketball/team/_/id/2250/"> <img style="margin:0px auto;display:block;h:auto;w:100%" src="http://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/2250.png&h=100&w=100"/> <p style="font-size:30%;" align="center">34-1 </p>  </a> ;;
+  }
+
+  measure: west_virginia_test {
+    type: max
+    sql: ${espn_id} ;;
+    html: <a href="http://www.espn.com/mens-college-basketball/team/_/id/277/"> <img style="margin:0px auto;display:block;h:auto;w:100%" src="http://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/277.png&h=100&w=100"/> <p style="font-size:30%;" align="center">28-8 </p>  </a> ;;
+  }
+
+
   measure: count {
     type: count
     approximate_threshold: 100000

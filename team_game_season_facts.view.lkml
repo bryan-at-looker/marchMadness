@@ -53,6 +53,11 @@ view: team_game_season_facts {
   dimension: team_name {
     type: string
     sql: ${TABLE}.team_name ;;
+    link: {
+      label: "Team Dashboard"
+      url: "/dashboards/555?Team={{value}}&Season=2017"
+      icon_url: "http://looker.com/favicon.ico"
+    }
   }
 
   measure: measure_team_name {
@@ -78,6 +83,11 @@ view: team_game_season_facts {
    dimension: opponent_name {
     type: string
     sql: ${TABLE}.opponent_name ;;
+    link: {
+      label: "Team Dashboard"
+      url: "/dashboards/555?Team={{value}}&Season=2017"
+      icon_url: "http://looker.com/favicon.ico"
+    }
   }
 
   dimension: matchup {
@@ -96,6 +106,7 @@ view: team_game_season_facts {
     type: time
     timeframes: [date,week,month]
     sql: ${TABLE}.game_date ;;
+#     html: <a href="http://www.espn.com/mens-college-basketball/matchup/_/gameId/"{{allRecords.game_num._value}} > {{value}} </a> ;;
 #     html: <a href="http://www.google.com/search?btnI&q=ncaa+game+summary+{{team_game_season_facts.matchup._value | url_encode | replace:'-','+'}}+{{allRecords.final_score._value | | replace:'-','+'}}+site:espn.com"> {{value}} </a>;;
   }
 
@@ -137,6 +148,7 @@ view: team_game_season_facts {
   measure: record_measure {
     type: string
     sql: MAX(${record}) ;;
+#     drill_fields: [detail*]
   }
 
   dimension: final_record {
