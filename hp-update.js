@@ -485,7 +485,7 @@
                 }
               }
               else if (!nullColors && d.data.value  == null) {
-                return '#FFFFFF'
+                return 'transparent'
               }
               else{
                 return colorScale(d.data.value || 0);
@@ -509,7 +509,7 @@
                 }
               }
               else if (!nullColors && d.data.value  == null) {
-                return '#FFFFFF'
+                return 'transparent'
               }
               else{
                 return colorScale(d.data1.value || 0);
@@ -533,7 +533,7 @@
               }
             }
             else if (!nullColors && d.data.value  == null) {
-              return '#FFFFFF'
+              return 'transparent'
             }
             else{
               return colorScale(d.data2.value || 0);
