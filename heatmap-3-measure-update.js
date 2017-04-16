@@ -110,7 +110,7 @@
         section: "Data",
         default: false,
         order: 12
-      }  
+      },
 
     // ADD a toggle to color extremes or not
     colorExtremes: {
