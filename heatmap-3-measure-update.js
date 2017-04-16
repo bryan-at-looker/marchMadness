@@ -105,10 +105,10 @@
       },  
 
       nullColors: {
-        type: "boolean"
-        label: "Color Null Values"
-        section: "Data"
-        default: false
+        type: "boolean",
+        label: "Color Null Values",
+        section: "Data",
+        default: false,
         order: 12
       }  
 
