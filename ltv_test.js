@@ -1,7 +1,7 @@
 (function() {
   looker.plugins.visualizations.add({
-    id: 'heatmap-3-measure-update',
-    label: 'Heatmap (Three Measures) Update',
+    id: 'ltv_grid',
+    label: 'LTV Grid',
     options: {
       colorPreSet:
       {
