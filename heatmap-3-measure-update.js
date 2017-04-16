@@ -57,7 +57,7 @@
       },      
       nullCellBorders: {
         type: "boolean",
-        label: "Show Cell Borders for null values",
+        label: "Show Cell Borders for Null Values",
         section: "Data",
         default: false,
         order: 5
@@ -110,7 +110,7 @@
         section: "Data",
         default: false,
         order: 12
-      },
+      }  
 
     // ADD a toggle to color extremes or not
     colorExtremes: {
@@ -245,6 +245,7 @@
     var colorFirstColumn = settings.colorFirstColumn || false;
     var showFirstColumn = settings.showFirstColumn || false;
     var nullCellBorders = settings.nullCellBorders || false;
+    var nullColors = settings.nullColors || false;
     var verticalAlign = settings.verticalAlign || 'top';
     var equalWidth = settings.equalWidth || false;
 
