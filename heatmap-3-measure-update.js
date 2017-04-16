@@ -484,7 +484,7 @@
                   return '#f6f8fa';
                 }
               }
-              else if (!nullColors && d.data.value  == '') {
+              else if (!nullColors && d.data.value  == null) {
                 return '#FFFFFF'
               }
               else{
@@ -508,7 +508,7 @@
                   return '#f6f8fa';
                 }
               }
-              else if (!nullColors && d.data.value  == '') {
+              else if (!nullColors && d.data.value  == null) {
                 return '#FFFFFF'
               }
               else{
@@ -532,7 +532,7 @@
                 return '#f6f8fa';
               }
             }
-            else if (!nullColors && d.data.value  == '') {
+            else if (!nullColors && d.data.value  == null) {
               return '#FFFFFF'
             }
             else{
