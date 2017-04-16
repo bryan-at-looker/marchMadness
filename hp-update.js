@@ -135,7 +135,7 @@
         label: "Square Boxes",
         section: "Other",
         default: true,
-        order: 1}
+        order: 1
       },
     headBackground:  {
       type: 'string',
@@ -581,8 +581,12 @@
         return 100/columncount + '%';
       }
     })
+
       .style('height',function(d){
-        return 100/columncount + '%'
+        if(squareBoxes) {
+          var cw = $('.child').width();
+          return $('.child').css({'height':cw+'px'});
+        }
       })
 
       
