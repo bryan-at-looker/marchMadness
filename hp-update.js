@@ -128,7 +128,15 @@
     //   section: "Data",
     //   default: true,
     //   order: 7
-    // },   
+    // }, 
+
+    squareBoxes: {
+        type: "boolean",
+        label: "Square Boxes",
+        section: "Other",
+        default: true,
+        order: 1}
+      },
     headBackground:  {
       type: 'string',
       label: 'Heading Background Color',
@@ -172,6 +180,8 @@
         placeholder: "Enter a new title ",
         order: 8}
       },
+
+
 
       handleErrors: function(data, resp) {
 
@@ -248,6 +258,7 @@
     var nullColors = settings.nullColors || false;
     var verticalAlign = settings.verticalAlign || 'top';
     var equalWidth = settings.equalWidth || false;
+    var squareBoxes = settings.squareBoxes || true;
 
     var colorExtremes = settings.colorExtremes || false;
 
@@ -570,6 +581,9 @@
         return 100/columncount + '%';
       }
     })
+      .style('height',function(d){
+        return 100/columncount + '%'
+      })
 
       
       .style('text-align', function(d) {
