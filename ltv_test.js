@@ -87,8 +87,8 @@
       .style('overflow', 'auto')
       .style('height', '100%')
       .append('grid')
-      .attr('class', 'grid')
-      .attr('id', 'grid-id')
+      .attr('class', 'ltv_grid')
+      .attr('id', 'ltv_grid')
       .attr('width', '100%')
       .attr('height', '100%');
     },
@@ -209,10 +209,10 @@
 			// I like to log the data to the console for quick debugging
 			// console.log(gridData);
 
-			var grid = d3.select("#grid")
+			var ltv_grid = d3.select("#grid")
 				.append("svg")
-				.attr("width","510px")
-				.attr("height","510px");
+				.attr("width","100%")
+				.attr("height","100%");
 				
 			var row = grid.selectAll(".row")
 				.data(gridData)
