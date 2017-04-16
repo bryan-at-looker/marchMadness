@@ -485,7 +485,7 @@
                 }
               }
               else if (!nullColors && d.data.value  == '') {
-                return 'transparent'
+                return 'rgba(255, 255, 255, 0.5)'
               }
               else{
                 return colorScale(d.data.value || 0);
@@ -509,7 +509,7 @@
                 }
               }
               else if (!nullColors && d.data.value  == '') {
-                return 'transparent'
+                return 'rgba(255, 255, 255, 0.5)'
               }
               else{
                 return colorScale(d.data1.value || 0);
@@ -533,7 +533,7 @@
               }
             }
             else if (!nullColors && d.data.value  == '') {
-              return 'transparent'
+              return 'rgba(255, 255, 255, 0.5)'
             }
             else{
               return colorScale(d.data2.value || 0);
